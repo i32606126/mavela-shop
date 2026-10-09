@@ -13,17 +13,18 @@
             --gray-text: #666;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
-        body { background: var(--bg); color: var(--primary); line-height: 1.6; }
+        body { background: var(--bg); color: var(--primary); line-height: 1.6; scroll-behavior: smooth; }
         
         /* Header & Navigation */
         header { border-bottom: 1px solid var(--border); padding: 20px 40px; background: #fff; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .logo { font-family: serif; font-size: 26px; letter-spacing: 3px; font-weight: bold; text-decoration: none; color: var(--primary); }
         
-        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav ul { display: flex; list-style: none; gap: 25px; flex-wrap: wrap; align-items: center; }
         nav ul li a { text-decoration: none; color: var(--gray-text); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
         nav ul li a:hover { color: var(--primary); }
         
         .header-icons { display: flex; gap: 20px; align-items: center; font-size: 16px; color: var(--primary); cursor: pointer; }
+        .cart-icon { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--primary); display: flex; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* Hero Section */
         .hero { display: flex; min-height: 80vh; align-items: center; background: #fff; border-bottom: 1px solid var(--border); }
@@ -54,26 +55,40 @@
         .product-title { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
         .product-price { font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 20px; display: block; }
         
-        .btn-order { background: var(--primary); color: #fff; border: none; padding: 12px 20px; width: 100%; font-size: 11px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: background 0.3s; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-order { background: var(--primary); color: #fff; border: none; padding: 12px 20px; width: 100%; font-size: 11px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: background 0.3s; }
         .btn-order:hover { background: var(--accent); }
+
+        /* Modal Popup */
+        #orderModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: #fff; width: 90%; max-width: 450px; padding: 40px; border: 1px solid var(--border); position: relative; }
+        .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--gray-text); }
+        .modal-title { font-family: serif; font-size: 24px; margin-bottom: 25px; font-weight: normal; }
+        
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: bold; color: var(--gray-text); }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border); font-size: 13px; background: var(--bg); outline: none; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header & Navigation -->
     <header>
         <a href="#" class="logo">MAVÉLA</a>
         <nav>
             <ul>
-                <li><a href="#">Nouveautés</a></li>
-                <li><a href="#">Collections</a></li>
-                <li><a href="#">Robes</a></li>
-                <li><a href="#">Ensembles</a></li>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#shop">Nouveautés</a></li>
+                <li><a href="#shop">Collections</a></li>
+                <li><a href="#shop">Robes</a></li>
+                <li><a href="#shop">Ensembles</a></li>
+                <li><a href="#shop">Pyjamas</a></li>
+                <li><a href="#shop">Jupes</a></li>
+                <li><a href="#shop">Pulls</a></li>
             </ul>
         </nav>
         <div class="header-icons">
             <span>🔍</span>
-            <span>🛒 0</span>
+            <button class="cart-icon" onclick="openModal('Panier Global / Commande générale', sur = 'Sur mesure')">🛒 Panier</button>
         </div>
     </header>
 
@@ -115,17 +130,97 @@
                 <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80" alt="Ensemble Naya">
                 <div class="product-title">Ensemble Naya</div>
                 <span class="product-price">3,500 DZD</span>
-                <a href="#" class="btn-order">Commander sur WhatsApp</a>
+                <button class="btn-order" onclick="openModal('Ensemble Naya', '3,500 DZD')">Commander sur WhatsApp</button>
             </div>
 
             <div class="product-card">
                 <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80" alt="Robe Lina">
                 <div class="product-title">Robe Lina</div>
                 <span class="product-price">4,200 DZD</span>
-                <a href="#" class="btn-order">Commander sur WhatsApp</a>
+                <button class="btn-order" onclick="openModal('Robe Lina', '4,200 DZD')">Commander sur WhatsApp</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Popup للواتساب -->
+    <div id="orderModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">✕</button>
+            <h3 class="modal-title" id="modalProductName">Commander</h3>
+            
+            <div class="form-group">
+                <label>NOM ET PRÉNOM</label>
+                <input type="text" id="clientName" placeholder="Ex: Amina Benali">
+            </div>
+            <div class="form-group">
+                <label>TÉLÉPHONE</label>
+                <input type="tel" id="clientPhone" placeholder="Ex: 0661000000">
+            </div>
+            <div class="form-group">
+                <label>WILAYA</label>
+                <select id="clientWilaya">
+                    <option value="16 - Alger">16 - Alger</option>
+                    <option value="35 - Boumerdès">35 - Boumerdès</option>
+                    <option value="09 - Blida">09 - Blida</option>
+                    <option value="Autre Wilaya">Autre Wilaya (58 Wilayas)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>TAILLE</label>
+                <select id="clientSize">
+                    <option value="S">S</option>
+                    <option value="M" selected>M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>COULEUR</label>
+                <select id="clientColor">
+                    <option value="Noir">Noir</option>
+                    <option value="Beige">Beige</option>
+                    <option value="Blanc">Blanc</option>
+                </select>
+            </div>
+
+            <button class="btn-order" onclick="sendToWhatsApp()" style="background: #25d366; margin-top: 10px; padding: 15px;">VALIDER LA COMMANDE (WHATSAPP)</button>
+        </div>
+    </div>
+
+    <script>
+        let currentProduct = '';
+        let currentPrice = '';
+
+        function openModal(name, price) {
+            currentProduct = name;
+            currentPrice = price ? price : 'Sur mesure';
+            document.getElementById('modalProductName').innerText = "Commander: " + currentProduct;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        function sendToWhatsApp() {
+            let name = document.getElementById('clientName').value;
+            let phone = document.getElementById('clientPhone').value;
+            let wilaya = document.getElementById('clientWilaya').value;
+            let size = document.getElementById('clientSize').value;
+            let color = document.getElementById('clientColor').value;
+
+            if(!name || !phone) {
+                alert('Veuillez remplir votre nom et numéro de téléphone.');
+                return;
+            }
+
+            // استبدلي هذا الرقم برقم واتساب الخاص بكِ مع رمز الدولة (مثال: 213600000000)
+            let myPhoneNumber = "213600000000"; 
+
+            let message = `Bonjour MAVÉLA,%0A%0AJe souhaite commander:%0A- Produit: ${currentProduct}%0A- Prix: ${currentPrice}%0A- Taille: ${size}%0A- Couleur: ${color}%0A%0AInformations de livraison:%0A- Nom: ${name}%0A- Téléphone: ${phone}%0A- Wilaya: ${wilaya}`;
+
+            window.open(`https://wa.me/${myPhoneNumber}?text=${message}`, '_blank');
+        }
+    </script>
 </body>
 </html>
